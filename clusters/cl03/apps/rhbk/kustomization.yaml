@@ -4,6 +4,7 @@ resources:
   - externalsecret-pgsql.yaml
   - externalsecret-ad-bind.yaml
   - vault-ca-bundle-configmap.yaml
+  - rbac-istio-gateway-status.yaml
   - certificate.yaml
   - keycloak.yaml
   - gateway.yaml
