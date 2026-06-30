@@ -1,0 +1,25 @@
+apiVersion: operator.openshift.io/v1
+kind: DNS
+metadata:
+  name: default
+spec:
+  cache:
+    negativeTTL: 0s
+    positiveTTL: 0s
+  logLevel: Normal
+  nodePlacement: {}
+  operatorLogLevel: Normal
+  servers:
+    - name: ad-arencloud
+      zones:
+        - ad.arencloud.com
+      forwardPlugin:
+        upstreams:
+          - 10.10.30.11
+  upstreamResolvers:
+    policy: Sequential
+    protocolStrategy: ""
+    transportConfig: {}
+    upstreams:
+      - port: 53
+        type: SystemResolvConf

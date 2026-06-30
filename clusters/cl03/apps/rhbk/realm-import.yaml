@@ -1,0 +1,172 @@
+apiVersion: k8s.keycloak.org/v2beta1
+kind: KeycloakRealmImport
+metadata:
+  name: arencloud
+  namespace: rhbk
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+  labels:
+    app.kubernetes.io/name: rhbk
+    app.kubernetes.io/component: realm
+spec:
+  keycloakCRName: rhbk
+  realm:
+    realm: arencloud
+    enabled: true
+    displayName: Arencloud
+    registrationAllowed: false
+    resetPasswordAllowed: false
+    rememberMe: true
+    loginWithEmailAllowed: true
+    duplicateEmailsAllowed: false
+    sslRequired: external
+    roles:
+      realm:
+        - name: balance_user
+          description: Standard Balance application access for bank employees
+        - name: balance_approver
+          description: Privileged Balance workflow approval access
+        - name: balance_auditor
+          description: Read-only Balance audit and reporting access
+        - name: balance_admin
+          description: Balance application administration access
+    groups:
+      - name: balance-users
+        realmRoles:
+          - balance_user
+      - name: balance-approvers
+        realmRoles:
+          - balance_approver
+      - name: balance-auditors
+        realmRoles:
+          - balance_auditor
+      - name: balance-admins
+        realmRoles:
+          - balance_admin
+    clients:
+      - clientId: balance
+        name: Balance
+        protocol: openid-connect
+        publicClient: false
+        standardFlowEnabled: true
+        directAccessGrantsEnabled: false
+        serviceAccountsEnabled: false
+        frontchannelLogout: true
+        redirectUris:
+          - https://balance.arencloud.com/*
+        webOrigins:
+          - https://balance.arencloud.com
+        defaultClientScopes:
+          - profile
+          - email
+          - roles
+        optionalClientScopes:
+          - address
+          - phone
+          - offline_access
+        protocolMappers:
+          - name: realm roles
+            protocol: openid-connect
+            protocolMapper: oidc-usermodel-realm-role-mapper
+            consentRequired: false
+            config:
+              access.token.claim: "true"
+              claim.name: realm_access.roles
+              id.token.claim: "true"
+              jsonType.label: String
+              multivalued: "true"
+              userinfo.token.claim: "true"
+    components:
+      org.keycloak.storage.UserStorageProvider:
+        - name: arencloud-ad
+          providerId: ldap
+          providerType: org.keycloak.storage.UserStorageProvider
+          config:
+            enabled:
+              - "true"
+            priority:
+              - "0"
+            fullSyncPeriod:
+              - "604800"
+            changedSyncPeriod:
+              - "86400"
+            cachePolicy:
+              - DEFAULT
+            evictDay:
+              - ""
+            evictHour:
+              - ""
+            evictMinute:
+              - ""
+            maxLifespan:
+              - ""
+            batchSizeForSync:
+              - "1000"
+            editMode:
+              - READ_ONLY
+            importEnabled:
+              - "true"
+            syncRegistrations:
+              - "false"
+            vendor:
+              - ad
+            usernameLDAPAttribute:
+              - sAMAccountName
+            rdnLDAPAttribute:
+              - cn
+            uuidLDAPAttribute:
+              - objectGUID
+            userObjectClasses:
+              - "person, organizationalPerson, user"
+            connectionUrl:
+              - ldaps://ad01.ad.arencloud.com:636
+            usersDn:
+              - OU=Users,OU=Arencloud,DC=ad,DC=arencloud,DC=com
+            authType:
+              - simple
+            bindDn:
+              - CN=RHBK LDAP Bind,OU=Service Accounts,OU=Arencloud,DC=ad,DC=arencloud,DC=com
+            bindCredential:
+              - ${vault.ldapBc}
+            searchScope:
+              - "2"
+            validatePasswordPolicy:
+              - "false"
+            trustEmail:
+              - "false"
+            useTruststoreSpi:
+              - ldapsOnly
+            connectionPooling:
+              - "true"
+            pagination:
+              - "true"
+            allowKerberosAuthentication:
+              - "false"
+            useKerberosForPasswordAuthentication:
+              - "false"
+          subComponents:
+            org.keycloak.storage.ldap.mappers.LDAPStorageMapper:
+              - name: ad-groups
+                providerId: group-ldap-mapper
+                providerType: org.keycloak.storage.ldap.mappers.LDAPStorageMapper
+                config:
+                  mode:
+                    - READ_ONLY
+                  groups.dn:
+                    - OU=Groups,OU=Arencloud,DC=ad,DC=arencloud,DC=com
+                  group.name.ldap.attribute:
+                    - cn
+                  group.object.classes:
+                    - group
+                  preserve.group.inheritance:
+                    - "true"
+                  ignore.missing.groups:
+                    - "true"
+                  membership.ldap.attribute:
+                    - member
+                  membership.attribute.type:
+                    - DN
+                  membership.user.ldap.attribute:
+                    - dn
+                  user.roles.retrieve.strategy:
+                    - LOAD_GROUPS_BY_MEMBER_ATTRIBUTE

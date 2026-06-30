@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rhbk
+  namespace: openshift-gitops
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: cluster-wide
+  source:
+    repoURL: https://github.com/arencloud/rhbk-use-case.git
+    targetRevision: HEAD
+    path: clusters/cl03/apps/rhbk
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: rhbk
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
+      - ServerSideApply=true

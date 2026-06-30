@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cl03-dns
+  namespace: openshift-gitops
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: cluster-wide
+  source:
+    repoURL: https://github.com/arencloud/rhbk-use-case.git
+    targetRevision: HEAD
+    path: clusters/cl03/bootstrap/dns
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openshift-dns-operator
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true

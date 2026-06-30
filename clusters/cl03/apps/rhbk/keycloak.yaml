@@ -1,0 +1,60 @@
+apiVersion: k8s.keycloak.org/v2beta1
+kind: Keycloak
+metadata:
+  name: rhbk
+  namespace: rhbk
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  labels:
+    app.kubernetes.io/name: rhbk
+    app.kubernetes.io/part-of: arencloud-identity
+spec:
+  instances: 1
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: "2"
+      memory: 2Gi
+  db:
+    vendor: postgres
+    host: 10.10.30.5
+    port: 5432
+    database: rhbk-cl03
+    usernameSecret:
+      name: rhbk-pgsql
+      key: username
+    passwordSecret:
+      name: rhbk-pgsql
+      key: password
+  hostname:
+    hostname: sso.arencloud.com
+  http:
+    httpEnabled: true
+  ingress:
+    enabled: false
+  proxy:
+    headers: xforwarded
+  additionalOptions:
+    - name: vault
+      value: file
+    - name: vault-dir
+      value: /mnt/keycloak-vault
+  truststores:
+    ad-vault-ca:
+      configMap:
+        name: vault-ca-bundle
+  unsupported:
+    podTemplate:
+      spec:
+        containers:
+          - name: keycloak
+            volumeMounts:
+              - name: rhbk-ad-bind-vault
+                mountPath: /mnt/keycloak-vault
+                readOnly: true
+        volumes:
+          - name: rhbk-ad-bind-vault
+            secret:
+              secretName: rhbk-ad-bind-vault
