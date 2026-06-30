@@ -80,7 +80,6 @@ spec:
       org.keycloak.storage.UserStorageProvider:
         - name: arencloud-ad
           providerId: ldap
-          providerType: org.keycloak.storage.UserStorageProvider
           config:
             enabled:
               - "true"
@@ -148,7 +147,6 @@ spec:
             org.keycloak.storage.ldap.mappers.LDAPStorageMapper:
               - name: ad-groups
                 providerId: group-ldap-mapper
-                providerType: org.keycloak.storage.ldap.mappers.LDAPStorageMapper
                 config:
                   mode:
                     - READ_ONLY

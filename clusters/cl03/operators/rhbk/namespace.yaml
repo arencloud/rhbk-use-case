@@ -7,4 +7,5 @@ metadata:
   labels:
     app.kubernetes.io/name: rhbk
     app.kubernetes.io/part-of: arencloud-identity
+    istio-discovery: mesh-demo
     istio.io/rev: demo
