@@ -16,8 +16,8 @@ spec:
   dnsNames:
     - sso.arencloud.com
   privateKey:
-    algorithm: ECDSA
-    size: 256
+    algorithm: RSA
+    size: 2048
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer
