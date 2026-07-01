@@ -75,4 +75,15 @@ class BalanceResourceTest {
                 .body("username", org.hamcrest.Matchers.is("balance.admin"))
                 .body("roles", hasItem("balance_admin"));
     }
+
+    @Test
+    @TestSecurity(user = "balance.employee", roles = {"balance_user"})
+    void callbackRedirectsAuthenticatedUserToHome() {
+        given()
+                .redirects().follow(false)
+                .when().get("/authorization-code/callback")
+                .then()
+                .statusCode(303)
+                .header("Location", "http://localhost:8081/");
+    }
 }
