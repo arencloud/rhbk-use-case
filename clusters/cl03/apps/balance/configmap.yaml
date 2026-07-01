@@ -11,6 +11,9 @@ metadata:
 data:
   OIDC_AUTH_SERVER_URL: https://sso.arencloud.com/realms/arencloud
   OIDC_CLIENT_ID: balance
+  QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING: "true"
+  QUARKUS_HTTP_PROXY_ALLOW_X_FORWARDED: "true"
+  QUARKUS_OIDC_AUTHENTICATION_FORCE_REDIRECT_HTTPS_SCHEME: "true"
   QUARKUS_OIDC_TLS_TLS_CONFIGURATION_NAME: rhbk
   QUARKUS_TLS_RHBK_TRUST_STORE_PEM_CERTS: /mnt/trusted-ca-bundle/ca-bundle.crt
   DB_JDBC_URL: jdbc:postgresql://10.10.30.5:5432/balance

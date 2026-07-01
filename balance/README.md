@@ -36,6 +36,9 @@ export OIDC_CLIENT_SECRET='<client-secret-from-rhbk>'
 export DB_JDBC_URL=jdbc:postgresql://<pgsql-host>:5432/balance
 export DB_USERNAME=balance
 export DB_PASSWORD='<pgsql-password>'
+export QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING=true
+export QUARKUS_HTTP_PROXY_ALLOW_X_FORWARDED=true
+export QUARKUS_OIDC_AUTHENTICATION_FORCE_REDIRECT_HTTPS_SCHEME=true
 ```
 
 The app is configured as an OIDC `hybrid` application, so browser login uses authorization code flow and API tests can use bearer tokens.
