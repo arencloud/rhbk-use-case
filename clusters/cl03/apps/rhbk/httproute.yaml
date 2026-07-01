@@ -10,12 +10,21 @@ metadata:
     app.kubernetes.io/component: gateway
 spec:
   parentRefs:
-    - name: rhbk
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: rhbk
       namespace: rhbk
       sectionName: https
   hostnames:
     - sso.arencloud.com
   rules:
     - backendRefs:
-        - name: rhbk-service
+        - group: ""
+          kind: Service
+          name: rhbk-service
           port: 8080
+          weight: 1
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
