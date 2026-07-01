@@ -132,7 +132,7 @@ true
 
 ```bash
 ./mvnw package
-export APP_VERSION=0.1.1
+export APP_VERSION=0.1.2
 export IMAGE=quay.io/arencloud/balance:${APP_VERSION}
 podman build -f src/main/container/Containerfile -t "${IMAGE}" .
 podman run --rm --userns=keep-id --user "$(id -u):0" --read-only --tmpfs /tmp:rw,size=128m -p 8080:8080 \
@@ -148,14 +148,14 @@ podman run --rm --userns=keep-id --user "$(id -u):0" --read-only --tmpfs /tmp:rw
 Or use the helper:
 
 ```bash
-./scripts/build-image.sh 0.1.1
+./scripts/build-image.sh 0.1.2
 ```
 
 Build and push a multi-architecture image for OpenShift:
 
 ```bash
 podman login quay.io
-./scripts/build-image.sh 0.1.1 multiarch
+./scripts/build-image.sh 0.1.2 multiarch
 ```
 
 ## OpenShift Security
@@ -202,7 +202,7 @@ clusters/cl03/apps/balance/
 The GitOps manifests deploy:
 
 - namespace `balance`
-- restricted Deployment using `quay.io/arencloud/balance:0.1.1`
+- restricted Deployment using `quay.io/arencloud/balance:0.1.2`
 - Service on port `8080`
 - OpenShift injected trusted CA bundle for outbound TLS to RHBK
 - cert-manager Certificate from `ClusterIssuer/vault`
@@ -220,4 +220,4 @@ DB_USERNAME
 DB_PASSWORD
 ```
 
-Update the GitOps image tag when releasing a new version. Do not deploy `latest`; use immutable version tags such as `quay.io/arencloud/balance:0.1.1`.
+Update the GitOps image tag when releasing a new version. Do not deploy `latest`; use immutable version tags such as `quay.io/arencloud/balance:0.1.2`.

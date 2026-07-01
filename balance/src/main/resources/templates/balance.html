@@ -12,10 +12,13 @@
         <h1>Balance</h1>
         <p>{user.displayName} &middot; {user.username}</p>
     </div>
-    <div class="roles">
-        {#for role in user.roles}
-            <span>{role}</span>
-        {/for}
+    <div class="identity-actions">
+        <div class="roles">
+            {#for role in user.roles}
+                <span>{role}</span>
+            {/for}
+        </div>
+        <a class="logout-button" href="/logout">Logout</a>
     </div>
 </header>
 

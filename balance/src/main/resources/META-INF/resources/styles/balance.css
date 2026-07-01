@@ -56,12 +56,39 @@ body {
     gap: 6px;
 }
 
+.identity-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+}
+
 .roles span {
     border: 1px solid #334155;
     border-radius: 999px;
     padding: 5px 9px;
     color: #cbd5e1;
     font-size: 12px;
+}
+
+.logout-button,
+.primary-action {
+    display: inline-flex;
+    min-height: 34px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    padding: 0 14px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.logout-button:hover,
+.primary-action:hover {
+    background: var(--accent-dark);
 }
 
 .layout {
@@ -146,6 +173,34 @@ th {
     font-size: 13px;
 }
 
+.signed-out {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+}
+
+.logout-panel {
+    width: min(420px, calc(100vw - 32px));
+    padding: 28px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+}
+
+.logout-panel h1,
+.logout-panel p {
+    margin: 0;
+}
+
+.logout-panel p {
+    margin-top: 8px;
+    color: var(--muted);
+}
+
+.logout-panel .primary-action {
+    margin-top: 20px;
+}
+
 @media (max-width: 720px) {
     .topbar {
         align-items: flex-start;
@@ -154,6 +209,11 @@ th {
 
     .roles {
         justify-content: flex-start;
+    }
+
+    .identity-actions {
+        align-items: flex-start;
+        flex-direction: column;
     }
 
     th,

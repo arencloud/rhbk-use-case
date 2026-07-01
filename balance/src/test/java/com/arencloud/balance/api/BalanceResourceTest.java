@@ -86,4 +86,13 @@ class BalanceResourceTest {
                 .statusCode(303)
                 .header("Location", "http://localhost:8081/");
     }
+
+    @Test
+    void loggedOutPageIsPublic() {
+        given()
+                .when().get("/logged-out")
+                .then()
+                .statusCode(200)
+                .body(org.hamcrest.Matchers.containsString("You have been signed out."));
+    }
 }

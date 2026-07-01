@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       annotations:
-        app.arencloud.com/config-revision: "2026-07-01-oidc-callback"
+        app.arencloud.com/config-revision: "2026-07-01-oidc-logout"
       labels:
         app.kubernetes.io/name: balance
         app.kubernetes.io/part-of: arencloud-identity
@@ -29,7 +29,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: balance
-          image: quay.io/arencloud/balance:0.1.1
+          image: quay.io/arencloud/balance:0.1.2
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

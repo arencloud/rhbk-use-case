@@ -23,7 +23,7 @@ cl03 GitOps deployment:
 - Argo CD application: `clusters/cl03/applications/balance.yaml`
 - Kubernetes manifests: `clusters/cl03/apps/balance/`
 - Public hostname: `https://balance.arencloud.com`
-- Image: `quay.io/arencloud/balance:0.1.1`
+- Image: `quay.io/arencloud/balance:0.1.2`
 - Runtime secret source: Vault path `arencloud/cl03/balance/app`
 
 Required Vault keys for the Balance application:
