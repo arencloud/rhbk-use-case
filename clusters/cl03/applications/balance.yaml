@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: balance
+  namespace: openshift-gitops
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: cluster-wide
+  source:
+    repoURL: https://github.com/arencloud/rhbk-use-case.git
+    targetRevision: HEAD
+    path: clusters/cl03/apps/balance
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: balance
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
+      - ServerSideApply=true

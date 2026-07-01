@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: balance-config
+  namespace: balance
+  labels:
+    app.kubernetes.io/name: balance
+    app.kubernetes.io/part-of: arencloud-identity
+data:
+  OIDC_AUTH_SERVER_URL: https://sso.arencloud.com/realms/arencloud
+  OIDC_CLIENT_ID: balance
+  DB_JDBC_URL: jdbc:postgresql://postgresql.example.invalid:5432/balance

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: balance
+  namespace: balance
+  labels:
+    app.kubernetes.io/name: balance
+    app.kubernetes.io/part-of: arencloud-identity
+spec:
+  selector:
+    app.kubernetes.io/name: balance
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+      protocol: TCP

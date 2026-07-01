@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balance</title>
+    <link rel="stylesheet" href="/styles/balance.css">
+</head>
+<body>
+<header class="topbar">
+    <div>
+        <h1>Balance</h1>
+        <p>{user.displayName} &middot; {user.username}</p>
+    </div>
+    <div class="roles">
+        {#for role in user.roles}
+            <span>{role}</span>
+        {/for}
+    </div>
+</header>
+
+<main class="layout">
+    <section class="panel accounts">
+        <div class="panel-title">
+            <h2>Customer Accounts</h2>
+            <a href="/api/accounts">API</a>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>Account</th>
+                <th>Customer</th>
+                <th>Type</th>
+                <th class="right">Balance</th>
+            </tr>
+            </thead>
+            <tbody>
+            {#for account in accounts}
+                <tr>
+                    <td>{account.accountNumber}</td>
+                    <td>{account.customerName}</td>
+                    <td>{account.type}</td>
+                    <td class="right">{account.currency} {account.balance}</td>
+                </tr>
+            {/for}
+            </tbody>
+        </table>
+    </section>
+
+    {#if user.canApprove}
+        <section class="panel">
+            <div class="panel-title">
+                <h2>Pending Approvals</h2>
+                <a href="/api/approvals">API</a>
+            </div>
+            {#if approvals.isEmpty}
+                <p class="empty">No pending approvals.</p>
+            {#else}
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Requested by</th>
+                        <th class="right">Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {#for approval in approvals}
+                        <tr>
+                            <td>{approval.id}</td>
+                            <td>{approval.requestedBy}</td>
+                            <td class="right">{approval.amount}</td>
+                        </tr>
+                    {/for}
+                    </tbody>
+                </table>
+            {/if}
+        </section>
+    {/if}
+
+    {#if user.canAudit}
+        <section class="panel audit">
+            <div class="panel-title">
+                <h2>Audit Trail</h2>
+                <a href="/api/audit">API</a>
+            </div>
+            {#for event in auditEvents}
+                <div class="audit-row">
+                    <strong>{event.action}</strong>
+                    <span>{event.actor} &middot; {event.target}</span>
+                    <p>{event.details}</p>
+                </div>
+            {/for}
+        </section>
+    {/if}
+</main>
+</body>
+</html>

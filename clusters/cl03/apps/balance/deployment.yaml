@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: balance
+  namespace: balance
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  labels:
+    app.kubernetes.io/name: balance
+    app.kubernetes.io/part-of: arencloud-identity
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: balance
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: balance
+        app.kubernetes.io/part-of: arencloud-identity
+    spec:
+      serviceAccountName: balance
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: balance
+          image: quay.io/arencloud/balance:0.1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: balance-config
+            - secretRef:
+                name: balance-secrets
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 768Mi
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: trusted-ca-bundle
+              mountPath: /mnt/trusted-ca-bundle
+              readOnly: true
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: trusted-ca-bundle
+          configMap:
+            name: trusted-ca-bundle
+            items:
+              - key: ca-bundle.crt
+                path: ca-bundle.crt

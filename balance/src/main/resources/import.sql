@@ -1,0 +1,1 @@
+-- Seed data is created by com.arencloud.balance.service.SeedData.

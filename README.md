@@ -13,3 +13,25 @@ Start with the architecture document:
 - [Balance AD and midPoint baseline](docs/balance-ad-midpoint-baseline.md)
 - [midPoint Balance usage guide](docs/midpoint-balance-usage-guide.md)
 - [midPoint admin operating model](docs/midpoint-admin-operating-model.md)
+
+## Balance Application
+
+The `balance/` directory contains the Quarkus application used to validate the end-to-end authorization flow.
+
+cl03 GitOps deployment:
+
+- Argo CD application: `clusters/cl03/applications/balance.yaml`
+- Kubernetes manifests: `clusters/cl03/apps/balance/`
+- Public hostname: `https://balance.arencloud.com`
+- Image: `quay.io/arencloud/balance:0.1.0`
+- Runtime secret source: Vault path `arencloud/cl03/balance/app`
+
+Required Vault keys for the Balance application:
+
+```text
+OIDC_CLIENT_SECRET
+DB_USERNAME
+DB_PASSWORD
+```
+
+ExternalDNS should publish the Cloudflare record from the `HTTPRoute` after the Gateway has an address.
