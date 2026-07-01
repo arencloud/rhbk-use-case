@@ -93,6 +93,17 @@ class BalanceResourceTest {
                 .when().get("/logged-out")
                 .then()
                 .statusCode(200)
-                .body(org.hamcrest.Matchers.containsString("You have been signed out."));
+                .body(org.hamcrest.Matchers.containsString("Your Balance session has ended."));
+    }
+
+    @Test
+    @TestSecurity(user = "balance.employee", roles = {"balance_user"})
+    void homePageIncludesLogoutAction() {
+        given()
+                .when().get("/")
+                .then()
+                .statusCode(200)
+                .body(org.hamcrest.Matchers.containsString("Customer balance operations"))
+                .body(org.hamcrest.Matchers.containsString("href=\"/logout\""));
     }
 }
