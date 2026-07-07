@@ -36,11 +36,17 @@ public class BalancePage {
     @Produces(MediaType.TEXT_HTML)
     @RolesAllowed({"balance_user", "balance_approver", "balance_auditor", "balance_admin"})
     public TemplateInstance index() {
+        boolean canRequestApproval = currentUser.hasAny("balance_user", "balance_admin");
+        boolean canAdminister = currentUser.hasAny("balance_admin");
+
         return balance
                 .data("user", currentUser.profile())
                 .data("accounts", balanceService.accounts())
                 .data("approvals", currentUser.hasAny("balance_approver", "balance_admin")
                         ? balanceService.pendingApprovals()
+                        : java.util.List.of())
+                .data("requestHistory", canRequestApproval
+                        ? (canAdminister ? balanceService.approvalRequests() : balanceService.approvalRequestsFor(currentUser.username()))
                         : java.util.List.of())
                 .data("auditEvents", currentUser.hasAny("balance_auditor", "balance_admin")
                         ? balanceService.auditEvents()

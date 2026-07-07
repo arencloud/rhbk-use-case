@@ -48,6 +48,10 @@
             <strong>{approvals.size}</strong>
         </div>
         <div class="metric">
+            <span class="metric-label">Visible requests</span>
+            <strong>{requestHistory.size}</strong>
+        </div>
+        <div class="metric">
             <span class="metric-label">Audit entries</span>
             <strong>{auditEvents.size}</strong>
         </div>
@@ -117,6 +121,30 @@
                         <button class="form-button" type="submit">Request approval</button>
                     </form>
                 </section>
+
+                <section class="panel compact">
+                    <div class="panel-title">
+                        <div>
+                            <p class="section-kicker">Status</p>
+                            <h2>Request Status</h2>
+                        </div>
+                    </div>
+                    {#if requestHistory.isEmpty}
+                        <p class="empty">No requests submitted.</p>
+                    {#else}
+                        <div class="approval-list">
+                            {#for approval in requestHistory}
+                                <div class="approval-row status-row">
+                                    <span>#{approval.id}</span>
+                                    <strong>{approval.amount}</strong>
+                                    <small>{approval.requestedBy}</small>
+                                    <p>{approval.reason}</p>
+                                    <span class="request-status {approval.statusClass}">{approval.displayStatus}</span>
+                                </div>
+                            {/for}
+                        </div>
+                    {/if}
+                </section>
             {/if}
 
             {#if user.canApprove}
@@ -138,6 +166,7 @@
                                     <strong>{approval.amount}</strong>
                                     <small>{approval.requestedBy}</small>
                                     <p>{approval.reason}</p>
+                                    <span class="request-status {approval.statusClass}">{approval.displayStatus}</span>
                                     <form class="decision-form" method="post" action="/approvals/{approval.id}/approve">
                                         <input name="note" type="hidden" value="Approved from Balance UI">
                                         <button class="decision-button approve" type="submit">Approve</button>

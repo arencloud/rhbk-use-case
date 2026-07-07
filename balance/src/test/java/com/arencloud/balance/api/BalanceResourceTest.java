@@ -33,7 +33,9 @@ class BalanceResourceTest {
                 .when().post("/api/accounts/1/approval-requests")
                 .then()
                 .statusCode(200)
-                .body("status", org.hamcrest.Matchers.is("PENDING"));
+                .body("status", org.hamcrest.Matchers.is("PENDING"))
+                .body("displayStatus", org.hamcrest.Matchers.is("Requested"))
+                .body("statusClass", org.hamcrest.Matchers.is("requested"));
     }
 
     @Test
@@ -215,6 +217,8 @@ class BalanceResourceTest {
                 .body(containsString("Customer Accounts"))
                 .body(containsString("Approval Test"))
                 .body(containsString("Request approval"))
+                .body(containsString("Request Status"))
+                .body(containsString("Visible requests"))
                 .body(not(containsString("Pending Approvals")))
                 .body(not(containsString("Audit Trail")));
     }
@@ -230,6 +234,7 @@ class BalanceResourceTest {
                 .body(containsString("Pending Approvals"))
                 .body(not(containsString("Approval Test")))
                 .body(not(containsString("Request approval")))
+                .body(not(containsString("Request Status")))
                 .body(not(containsString("Audit Trail")));
     }
 
@@ -258,6 +263,7 @@ class BalanceResourceTest {
                 .body(not(containsString("Pending Approvals")))
                 .body(not(containsString("Approval Test")))
                 .body(not(containsString("Request approval")))
+                .body(not(containsString("Request Status")))
                 .body(containsString("Audit Trail"));
     }
 }

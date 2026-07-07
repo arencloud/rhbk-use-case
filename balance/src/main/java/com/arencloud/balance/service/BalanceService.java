@@ -61,6 +61,20 @@ public class BalanceService {
                 .toList();
     }
 
+    public List<ApprovalDto> approvalRequestsFor(String actor) {
+        return ApprovalRequest.<ApprovalRequest>list("requestedBy = ?1 order by requestedAt desc", actor)
+                .stream()
+                .map(ApprovalDto::from)
+                .toList();
+    }
+
+    public List<ApprovalDto> approvalRequests() {
+        return ApprovalRequest.<ApprovalRequest>list("order by requestedAt desc")
+                .stream()
+                .map(ApprovalDto::from)
+                .toList();
+    }
+
     @Transactional
     public ApprovalDto approve(Long approvalId, DecisionRequest request, String actor) {
         ApprovalRequest approval = findApproval(approvalId);
