@@ -89,6 +89,36 @@
         </section>
 
         <aside class="side-column">
+            {#if user.canRequestApproval}
+                <section class="panel compact request-panel">
+                    <div class="panel-title">
+                        <div>
+                            <p class="section-kicker">Request</p>
+                            <h2>Approval Test</h2>
+                        </div>
+                    </div>
+                    <form class="workflow-form" method="post" action="/approval-requests">
+                        <label>
+                            Account
+                            <select name="accountId" required>
+                                {#for account in accounts}
+                                    <option value="{account.id}">{account.accountNumber} - {account.customerName}</option>
+                                {/for}
+                            </select>
+                        </label>
+                        <label>
+                            Amount
+                            <input name="amount" type="number" min="0.01" step="0.01" value="1500.00" required>
+                        </label>
+                        <label>
+                            Reason
+                            <textarea name="reason" rows="3" required>Customer requested high-value balance confirmation</textarea>
+                        </label>
+                        <button class="form-button" type="submit">Request approval</button>
+                    </form>
+                </section>
+            {/if}
+
             {#if user.canApprove}
                 <section class="panel compact">
                     <div class="panel-title">
@@ -107,6 +137,15 @@
                                     <span>#{approval.id}</span>
                                     <strong>{approval.amount}</strong>
                                     <small>{approval.requestedBy}</small>
+                                    <p>{approval.reason}</p>
+                                    <form class="decision-form" method="post" action="/approvals/{approval.id}/approve">
+                                        <input name="note" type="hidden" value="Approved from Balance UI">
+                                        <button class="decision-button approve" type="submit">Approve</button>
+                                    </form>
+                                    <form class="decision-form" method="post" action="/approvals/{approval.id}/reject">
+                                        <input name="note" type="hidden" value="Rejected from Balance UI">
+                                        <button class="decision-button reject" type="submit">Reject</button>
+                                    </form>
                                 </div>
                             {/for}
                         </div>

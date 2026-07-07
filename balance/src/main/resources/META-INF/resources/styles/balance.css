@@ -133,6 +133,10 @@ body {
     background: #fff;
 }
 
+button {
+    font: inherit;
+}
+
 .layout {
     width: min(1240px, calc(100vw - 32px));
     margin: 24px auto 36px;
@@ -351,6 +355,87 @@ th {
 
 .approval-row small {
     grid-column: 1 / -1;
+}
+
+.approval-row p {
+    grid-column: 1 / -1;
+    margin: 4px 0 2px;
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.workflow-form {
+    display: grid;
+    gap: 14px;
+    padding: 18px;
+}
+
+.workflow-form label {
+    display: grid;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.workflow-form select,
+.workflow-form input,
+.workflow-form textarea {
+    width: 100%;
+    min-height: 40px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 9px 10px;
+    background: #fff;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.workflow-form textarea {
+    min-height: 86px;
+    resize: vertical;
+    line-height: 1.45;
+}
+
+.form-button,
+.decision-button {
+    min-height: 38px;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.form-button {
+    background: var(--accent);
+    color: #fff;
+}
+
+.form-button:hover {
+    background: var(--accent-dark);
+}
+
+.decision-form {
+    min-width: 0;
+}
+
+.decision-button {
+    width: 100%;
+    padding: 0 10px;
+}
+
+.decision-button.approve {
+    background: rgba(19, 121, 91, 0.12);
+    color: var(--success);
+}
+
+.decision-button.reject {
+    background: rgba(185, 28, 28, 0.1);
+    color: #991b1b;
 }
 
 .audit-row {

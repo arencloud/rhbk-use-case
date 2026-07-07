@@ -8,6 +8,7 @@ public record UserProfileDto(
         String email,
         Set<String> roles,
         boolean canViewBalances,
+        boolean canRequestApproval,
         boolean canApprove,
         boolean canAudit,
         boolean canAdminister) {

@@ -31,6 +31,7 @@ public class CurrentUser {
                 claim("email").orElse(""),
                 roles(),
                 hasAny("balance_user", "balance_approver", "balance_auditor", "balance_admin"),
+                hasAny("balance_user", "balance_admin"),
                 hasAny("balance_approver", "balance_admin"),
                 hasAny("balance_auditor", "balance_admin"),
                 hasAny("balance_admin"));

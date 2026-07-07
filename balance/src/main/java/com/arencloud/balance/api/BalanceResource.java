@@ -20,10 +20,6 @@ import java.util.List;
 
 @Path("/api")
 public class BalanceResource {
-    private static final String[] ANY_BALANCE_ROLE = {
-            "balance_user", "balance_approver", "balance_auditor", "balance_admin"
-    };
-
     private final BalanceService balanceService;
     private final CurrentUser currentUser;
 
@@ -55,14 +51,14 @@ public class BalanceResource {
 
     @POST
     @Path("/accounts/{id}/balance-checks")
-    @RolesAllowed({"balance_user", "balance_approver", "balance_admin"})
+    @RolesAllowed({"balance_user", "balance_admin"})
     public AccountDto checkBalance(@PathParam("id") Long id, @Valid BalanceCheckRequest request) {
         return balanceService.checkBalance(id, request, currentUser.username());
     }
 
     @POST
     @Path("/accounts/{id}/approval-requests")
-    @RolesAllowed({"balance_user", "balance_approver", "balance_admin"})
+    @RolesAllowed({"balance_user", "balance_admin"})
     public ApprovalDto requestApproval(@PathParam("id") Long id, @Valid ApprovalRequestDto request) {
         return balanceService.requestApproval(id, request, currentUser.username());
     }

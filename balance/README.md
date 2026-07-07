@@ -25,6 +25,8 @@ The application uses:
 | `balance_auditor` | View accounts and audit events |
 | `balance_admin` | Full lab access |
 
+Roles are composable. For example, a bank employee who must both request and approve workflows should receive both the `balance_user` and `balance_approver` roles from midPoint through AD group membership.
+
 ## Runtime Configuration
 
 Set these variables when running against RHBK and PostgreSQL:
@@ -62,25 +64,37 @@ Local dev users:
 | Username | Password | Roles |
 | --- | --- | --- |
 | `employee` | `employee` | `balance_user` |
-| `approver` | `approver` | `balance_user`, `balance_approver` |
+| `approver` | `approver` | `balance_approver` |
 | `auditor` | `auditor` | `balance_auditor` |
 | `admin` | `admin` | `balance_admin` |
 
 ## API
 
-All API endpoints require one of the Balance roles unless noted.
+API authorization follows the same RHBK roles that are mapped from AD groups:
 
-```text
-GET  /api/me
-GET  /api/accounts
-GET  /api/accounts/{id}
-POST /api/accounts/{id}/balance-checks
-POST /api/accounts/{id}/approval-requests
-GET  /api/approvals
-POST /api/approvals/{id}/approve
-POST /api/approvals/{id}/reject
-GET  /api/audit
-```
+| Endpoint | Required role |
+| --- | --- |
+| `GET /api/me` | Any Balance role |
+| `GET /api/accounts` | Any Balance role |
+| `GET /api/accounts/{id}` | Any Balance role |
+| `POST /api/accounts/{id}/balance-checks` | `balance_user` or `balance_admin` |
+| `POST /api/accounts/{id}/approval-requests` | `balance_user` or `balance_admin` |
+| `GET /api/approvals` | `balance_approver` or `balance_admin` |
+| `POST /api/approvals/{id}/approve` | `balance_approver` or `balance_admin` |
+| `POST /api/approvals/{id}/reject` | `balance_approver` or `balance_admin` |
+| `GET /api/audit` | `balance_auditor` or `balance_admin` |
+
+## Browser Authorization Test
+
+Use the web UI to validate the designed approval flow end to end:
+
+1. Sign in as a user with `balance_user`.
+2. Use the `Approval Test` form to create a pending approval request.
+3. Sign out and sign in as a user with `balance_approver`.
+4. Review the request in `Pending Approvals`, then approve or reject it.
+5. Sign in as a user with `balance_auditor` to verify the workflow events in `Audit Trail`.
+
+Pure approvers and auditors do not see the `Approval Test` form. A user that needs to both request and approve should receive both roles through midPoint.
 
 Example request:
 
@@ -132,7 +146,7 @@ true
 
 ```bash
 ./mvnw package
-export APP_VERSION=0.1.3
+export APP_VERSION=0.1.4
 export IMAGE=quay.io/arencloud/balance:${APP_VERSION}
 podman build -f src/main/container/Containerfile -t "${IMAGE}" .
 podman run --rm --userns=keep-id --user "$(id -u):0" --read-only --tmpfs /tmp:rw,size=128m -p 8080:8080 \
@@ -148,14 +162,14 @@ podman run --rm --userns=keep-id --user "$(id -u):0" --read-only --tmpfs /tmp:rw
 Or use the helper:
 
 ```bash
-./scripts/build-image.sh 0.1.3
+./scripts/build-image.sh 0.1.4
 ```
 
 Build and push a multi-architecture image for OpenShift:
 
 ```bash
 podman login quay.io
-./scripts/build-image.sh 0.1.3 multiarch
+./scripts/build-image.sh 0.1.4 multiarch
 ```
 
 ## OpenShift Security
@@ -202,7 +216,7 @@ clusters/cl03/apps/balance/
 The GitOps manifests deploy:
 
 - namespace `balance`
-- restricted Deployment using `quay.io/arencloud/balance:0.1.3`
+- restricted Deployment using `quay.io/arencloud/balance:0.1.4`
 - Service on port `8080`
 - OpenShift injected trusted CA bundle for outbound TLS to RHBK
 - cert-manager Certificate from `ClusterIssuer/vault`
@@ -220,4 +234,4 @@ DB_USERNAME
 DB_PASSWORD
 ```
 
-Update the GitOps image tag when releasing a new version. Do not deploy `latest`; use immutable version tags such as `quay.io/arencloud/balance:0.1.3`.
+Update the GitOps image tag when releasing a new version. Do not deploy `latest`; use immutable version tags such as `quay.io/arencloud/balance:0.1.4`.
