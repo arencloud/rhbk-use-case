@@ -10,6 +10,7 @@ Start with the architecture document:
 
 - [AD + midPoint + RHBK Architecture](docs/ad-midpoint-rhbk-architecture.md)
 - [cl03 RHBK GitOps deployment](docs/rhbk-cl03-gitops-deployment.md)
+- [cl02 RHBK active/passive GitOps deployment](docs/rhbk-cl02-active-passive-gitops.md)
 - [Balance AD and midPoint baseline](docs/balance-ad-midpoint-baseline.md)
 - [midPoint Balance usage guide](docs/midpoint-balance-usage-guide.md)
 - [midPoint admin operating model](docs/midpoint-admin-operating-model.md)
