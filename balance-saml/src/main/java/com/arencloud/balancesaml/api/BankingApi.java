@@ -27,7 +27,8 @@ public class BankingApi {
     @GET
     @Path("/me")
     public UserView me(@Context HttpHeaders headers) {
-        return access.user(access.require(headers));
+        return access.user(access.require(headers,
+                "balance_user", "balance_approver", "balance_auditor", "balance_admin"));
     }
 
     @GET

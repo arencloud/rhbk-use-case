@@ -38,7 +38,12 @@ public class BankingPage {
     @Produces(MediaType.TEXT_HTML)
     public Response index(@Context HttpHeaders headers) {
         return access.current(headers)
-                .map(principal -> Response.ok(page(principal)).build())
+                .map(principal -> hasBalanceAccess(principal)
+                        ? Response.ok(page(principal)).build()
+                        : Response.status(Response.Status.FORBIDDEN)
+                        .entity("Balance access requires one of: balance_user, balance_approver, balance_auditor, balance_admin")
+                        .type(MediaType.TEXT_PLAIN)
+                        .build())
                 .orElseGet(() -> access.redirectToLogin("/"));
     }
 
@@ -113,5 +118,9 @@ public class BankingPage {
 
     private static Response home() {
         return Response.seeOther(URI.create("/")).build();
+    }
+
+    private static boolean hasBalanceAccess(SamlPrincipal principal) {
+        return principal.hasAny("balance_user", "balance_approver", "balance_auditor", "balance_admin");
     }
 }

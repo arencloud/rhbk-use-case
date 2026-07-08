@@ -44,7 +44,7 @@ public class AccessService {
                 principal.displayName(),
                 principal.email(),
                 principal.roles(),
-                principal.hasAny("balance_user", "balance_approver", "balance_auditor", "balance_admin"),
+                principal.hasAny("balance_user", "balance_admin"),
                 principal.hasAny("balance_user", "balance_admin"),
                 principal.hasAny("balance_approver", "balance_admin"),
                 principal.hasAny("balance_auditor", "balance_admin"),
