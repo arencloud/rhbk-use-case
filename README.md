@@ -266,7 +266,7 @@ Passive cl02 GitOps deployment:
 | Kubernetes manifests | `clusters/cl02/apps/balance-saml/` |
 | Public hostname | `https://balance-saml.arencloud.com` |
 | DNS behavior | HTTPRoute is excluded from ExternalDNS; validate with `curl --resolve` |
-| IdP metadata source | local cl02 RHBK service, `rhbk-service.rhbk.svc.cluster.local` |
+| IdP metadata source | public `https://sso.arencloud.com` while that hostname points to the active RHBK site |
 
 See [balance-saml/README.md](balance-saml/README.md) for local build, SAML endpoints, and OpenShift runtime notes.
 

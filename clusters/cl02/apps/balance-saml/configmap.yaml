@@ -11,7 +11,7 @@ metadata:
 data:
   SAML_ENTITY_ID: balance-saml
   SAML_PUBLIC_URL: https://balance-saml.arencloud.com
-  SAML_IDP_METADATA_URL: http://rhbk-service.rhbk.svc.cluster.local:8080/realms/arencloud/protocol/saml/descriptor
+  SAML_IDP_METADATA_URL: https://sso.arencloud.com/realms/arencloud/protocol/saml/descriptor
   SAML_IDP_ENTITY_ID: https://sso.arencloud.com/realms/arencloud
   SAML_IDP_SSO_URL: https://sso.arencloud.com/realms/arencloud/protocol/saml
   SAML_TRUSTED_CA_PEM: /mnt/trusted-ca-bundle/ca-bundle.crt

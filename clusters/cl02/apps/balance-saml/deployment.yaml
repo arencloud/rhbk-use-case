@@ -19,7 +19,7 @@ spec:
         app.kubernetes.io/name: balance-saml
         app.kubernetes.io/part-of: arencloud-identity
       annotations:
-        arencloud.com/config-version: "saml-idp-entity-20260708"
+        arencloud.com/config-version: "saml-public-idp-metadata-20260708"
     spec:
       serviceAccountName: balance-saml
       automountServiceAccountToken: false
