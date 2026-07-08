@@ -117,6 +117,9 @@ public class SamlService {
             values.put(SettingsBuilder.SP_SINGLE_LOGOUT_SERVICE_URL_PROPERTY_KEY, config.publicUrl() + "/saml/logout");
             values.put(SettingsBuilder.SP_SINGLE_LOGOUT_SERVICE_BINDING_PROPERTY_KEY, Constants.BINDING_HTTP_POST);
             values.put(SettingsBuilder.SP_NAMEIDFORMAT_PROPERTY_KEY, Constants.NAMEID_UNSPECIFIED);
+            config.idpEntityId()
+                    .filter(value -> !value.isBlank())
+                    .ifPresent(value -> values.put(SettingsBuilder.IDP_ENTITYID_PROPERTY_KEY, value));
             config.idpSsoUrl()
                     .filter(value -> !value.isBlank())
                     .ifPresent(value -> values.put(SettingsBuilder.IDP_SINGLE_SIGN_ON_SERVICE_URL_PROPERTY_KEY, value));

@@ -12,6 +12,8 @@ public interface SamlApplicationConfig {
 
     String idpMetadataUrl();
 
+    Optional<String> idpEntityId();
+
     Optional<String> idpSsoUrl();
 
     String sessionCookie();
