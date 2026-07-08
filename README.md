@@ -16,7 +16,7 @@ midPoint assignment -> directory group -> RHBK realm role -> OIDC token -> appli
 | Identity governance | Evolveum midPoint |
 | Application identity provider | Red Hat Build of Keycloak, realm `arencloud` |
 | Public issuer | `https://sso.arencloud.com` |
-| Demo application | Balance, public URL `https://balance.arencloud.com` |
+| Demo applications | Balance OIDC `https://balance.arencloud.com`, Balance SAML `https://balance-saml.arencloud.com` |
 | Public DNS | Cloudflare, managed through ExternalDNS |
 | Secrets | Vault through External Secrets Operator |
 | TLS | cert-manager using `ClusterIssuer/vault` |
@@ -48,7 +48,8 @@ clusters/
     bootstrap/dns/      DNS forwarding for AD lookup
     operators/rhbk/     RHBK Operator subscription
     apps/rhbk/          Passive RHBK runtime manifests
-balance/                Quarkus demo banking application
+balance/                Quarkus OIDC demo banking application
+balance-saml/           Quarkus SAML demo banking application
 docs/                   Architecture, deployment, and operations notes
 ```
 
@@ -219,7 +220,55 @@ Balance authorizes users with RHBK realm roles:
 | `balance_auditor` | Read-only audit/reporting access |
 | `balance_admin` | Full lab access |
 
+The realm also includes a SAML client for testing SAML service-provider integration:
+
+| Item | Value |
+| --- | --- |
+| Client ID / SP entity ID | `balance-saml` |
+| Protocol | SAML |
+| ACS POST URL | `https://balance-saml.arencloud.com/saml/acs` |
+| SLO POST URL | `https://balance-saml.arencloud.com/saml/logout` |
+| Valid redirect URI | `https://balance-saml.arencloud.com/saml/*` |
+| NameID format | `username` |
+| Assertion signature | enabled |
+| Role attribute | `Role` |
+| User attributes | `email`, `firstName`, `lastName` |
+
+Use the RHBK realm SAML descriptor as the IdP metadata source:
+
+```text
+https://sso.arencloud.com/realms/arencloud/protocol/saml/descriptor
+```
+
+The SAML client is used by the second demo application in [balance-saml](balance-saml/README.md).
+
 See [balance/README.md](balance/README.md) for local development, API routes, and browser test flows.
+
+## Balance SAML Application
+
+The `balance-saml/` directory contains the second banking demo application. It tests RHBK as a SAML Identity Provider with a Quarkus service-provider application.
+
+cl03 GitOps deployment:
+
+| Item | Value |
+| --- | --- |
+| Argo CD application | `clusters/cl03/applications/balance-saml.yaml` |
+| Kubernetes manifests | `clusters/cl03/apps/balance-saml/` |
+| Public hostname | `https://balance-saml.arencloud.com` |
+| Image | `quay.io/arencloud/balance:saml-0.1.0` |
+| SAML SP entity ID | `balance-saml` |
+
+Passive cl02 GitOps deployment:
+
+| Item | Value |
+| --- | --- |
+| Argo CD application | `clusters/cl02/applications/balance-saml.yaml` |
+| Kubernetes manifests | `clusters/cl02/apps/balance-saml/` |
+| Public hostname | `https://balance-saml.arencloud.com` |
+| DNS behavior | HTTPRoute is excluded from ExternalDNS; validate with `curl --resolve` |
+| IdP metadata source | local cl02 RHBK service, `rhbk-service.rhbk.svc.cluster.local` |
+
+See [balance-saml/README.md](balance-saml/README.md) for local build, SAML endpoints, and OpenShift runtime notes.
 
 ## Validation Examples
 
@@ -228,7 +277,9 @@ Active site DNS validation:
 ```bash
 dig +short sso.arencloud.com
 curl -vk https://sso.arencloud.com/realms/arencloud/.well-known/openid-configuration
+curl -vk https://sso.arencloud.com/realms/arencloud/protocol/saml/descriptor
 curl -vk https://balance.arencloud.com/
+curl -vk https://balance-saml.arencloud.com/
 ```
 
 Passive cl02 validation without moving DNS:

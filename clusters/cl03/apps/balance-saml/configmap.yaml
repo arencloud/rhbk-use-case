@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: balance-saml-config
+  namespace: balance-saml
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+  labels:
+    app.kubernetes.io/name: balance-saml
+    app.kubernetes.io/part-of: arencloud-identity
+data:
+  SAML_ENTITY_ID: balance-saml
+  SAML_PUBLIC_URL: https://balance-saml.arencloud.com
+  SAML_IDP_METADATA_URL: https://sso.arencloud.com/realms/arencloud/protocol/saml/descriptor
+  SAML_TRUSTED_CA_PEM: /mnt/trusted-ca-bundle/ca-bundle.crt
+  QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING: "true"
+  QUARKUS_HTTP_PROXY_ALLOW_X_FORWARDED: "true"

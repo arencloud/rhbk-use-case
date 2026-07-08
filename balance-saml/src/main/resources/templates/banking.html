@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Balance SAML</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #657084;
+      --line: #d8dee8;
+      --paper: #ffffff;
+      --field: #f5f7fb;
+      --navy: #14213d;
+      --teal: #007f7a;
+      --green: #087f5b;
+      --amber: #b7791f;
+      --red: #b42318;
+      --blue: #2563eb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #eef2f7;
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    header {
+      background: var(--navy);
+      color: white;
+      border-bottom: 4px solid var(--teal);
+    }
+
+    .topbar {
+      width: min(1440px, calc(100% - 32px));
+      margin: 0 auto;
+      min-height: 72px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .28);
+      background: rgba(255, 255, 255, .08);
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      color: #cbd5e1;
+      font-size: .88rem;
+    }
+
+    .session {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .session a {
+      color: white;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, .36);
+      padding: 9px 12px;
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+    }
+
+    main {
+      width: min(1440px, calc(100% - 32px));
+      margin: 24px auto 40px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: 1.2fr repeat(3, minmax(180px, .4fr));
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .panel,
+    .metric,
+    .account,
+    .table-wrap {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      box-shadow: 0 8px 24px rgba(20, 33, 61, .06);
+    }
+
+    .profile {
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .profile h2,
+    .section-head h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      letter-spacing: 0;
+    }
+
+    .profile p,
+    .section-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .roles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 4px 9px;
+      background: #edf2f7;
+      border: 1px solid #d8dee8;
+      color: #273244;
+      font-size: .82rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .metric {
+      padding: 16px;
+      display: grid;
+      align-content: center;
+      gap: 6px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .metric strong {
+      font-size: 1.7rem;
+      letter-spacing: 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(340px, .75fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .section {
+      display: grid;
+      gap: 12px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .accounts {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .account {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .account-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .account h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .account small {
+      color: var(--muted);
+      display: block;
+      margin-top: 4px;
+    }
+
+    .amount {
+      font-size: 1.55rem;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .detail {
+      background: var(--field);
+      border: 1px solid #e2e8f0;
+      padding: 10px;
+      min-width: 0;
+    }
+
+    .detail span {
+      color: var(--muted);
+      font-size: .75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .detail strong {
+      display: block;
+      margin-top: 5px;
+      overflow-wrap: anywhere;
+    }
+
+    form {
+      display: grid;
+      gap: 9px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid #cbd5e1;
+      background: white;
+      color: var(--ink);
+      padding: 9px 10px;
+      font: inherit;
+      border-radius: 4px;
+    }
+
+    textarea {
+      min-height: 76px;
+      resize: vertical;
+    }
+
+    button {
+      border: 0;
+      background: var(--teal);
+      color: white;
+      min-height: 40px;
+      padding: 10px 12px;
+      border-radius: 4px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: var(--navy);
+    }
+
+    button.danger {
+      background: var(--red);
+    }
+
+    .panel {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      overflow: hidden;
+      border-radius: 6px;
+    }
+
+    th,
+    td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #e5eaf1;
+      text-align: left;
+      vertical-align: top;
+      font-size: .92rem;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: .76rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      background: #f8fafc;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .status {
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .requested {
+      color: var(--amber);
+    }
+
+    .approved {
+      color: var(--green);
+    }
+
+    .rejected {
+      color: var(--red);
+    }
+
+    .empty {
+      color: var(--muted);
+      padding: 18px;
+      border: 1px dashed #cbd5e1;
+      background: #f8fafc;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    @media (max-width: 1040px) {
+      .summary,
+      .grid,
+      .accounts {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar,
+      main {
+        width: min(100% - 20px, 1440px);
+      }
+
+      .topbar {
+        grid-template-columns: 1fr;
+        padding: 12px 0;
+      }
+
+      .session {
+        justify-content: flex-start;
+      }
+
+      .details,
+      .actions {
+        grid-template-columns: 1fr;
+      }
+
+      table,
+      tbody,
+      tr,
+      td {
+        display: block;
+      }
+
+      thead {
+        display: none;
+      }
+
+      td {
+        border-bottom: 0;
+      }
+
+      tr {
+        border-bottom: 1px solid #e5eaf1;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="topbar">
+    <div class="brand">
+      <div class="mark">BS</div>
+      <div>
+        <h1>Balance SAML Banking</h1>
+        <p>RHBK SAML service-provider test application</p>
+      </div>
+    </div>
+    <div class="session">
+      <span>{user.displayName}</span>
+      <a href="/saml/metadata">SP Metadata</a>
+      <a href="/logout">Logout</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="summary">
+    <div class="panel profile">
+      <div>
+        <h2>{user.displayName}</h2>
+        <p>{user.email}</p>
+      </div>
+      <div class="roles">
+        {#for role in user.roles}
+          <span class="tag">{role}</span>
+        {/for}
+      </div>
+    </div>
+    <div class="metric">
+      <span>Accounts</span>
+      <strong>{accounts.size}</strong>
+    </div>
+    <div class="metric">
+      <span>Requested</span>
+      <strong>{requestHistory.size}</strong>
+    </div>
+    <div class="metric">
+      <span>Pending</span>
+      <strong>{approvals.size}</strong>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>Customer Accounts</h2>
+          <p>High-signal account view used to verify SAML-authenticated banking access.</p>
+        </div>
+      </div>
+
+      <div class="accounts">
+        {#for account in accounts}
+          <article class="account">
+            <div class="account-top">
+              <div>
+                <h3>{account.customerName}</h3>
+                <small>{account.accountNumber} - {account.product}</small>
+              </div>
+              <span class="tag">{account.status}</span>
+            </div>
+            <div>
+              <div class="amount">{account.currency} {account.availableBalance}</div>
+              <small>Available balance</small>
+            </div>
+            <div class="details">
+              <div class="detail">
+                <span>Ledger</span>
+                <strong>{account.ledgerBalance}</strong>
+              </div>
+              <div class="detail">
+                <span>Risk</span>
+                <strong>{account.riskBand}</strong>
+              </div>
+              <div class="detail">
+                <span>ID</span>
+                <strong>{account.id}</strong>
+              </div>
+            </div>
+            {#if user.canViewBalances}
+              <form method="post" action="/balance-checks">
+                <input type="hidden" name="accountId" value="{account.id}">
+                <input name="reason" value="Customer service balance inquiry" aria-label="Balance check reason">
+                <button type="submit">Record Balance Check</button>
+              </form>
+            {/if}
+          </article>
+        {/for}
+      </div>
+    </div>
+
+    <aside class="section">
+      {#if user.canRequestApproval}
+        <div class="panel">
+          <div class="section-head">
+            <div>
+              <h2>Request Approval</h2>
+              <p>Create a pending request that approvers can approve or reject.</p>
+            </div>
+          </div>
+          <form method="post" action="/approval-requests">
+            <select name="accountId" aria-label="Account">
+              {#for account in accounts}
+                <option value="{account.id}">{account.accountNumber} - {account.customerName}</option>
+              {/for}
+            </select>
+            <input name="amount" type="number" step="0.01" min="0.01" value="2500.00" aria-label="Amount">
+            <textarea name="reason" aria-label="Reason">Manual review required for customer balance exception.</textarea>
+            <button type="submit">Submit Request</button>
+          </form>
+        </div>
+      {/if}
+
+      {#if user.canApprove}
+        <div class="panel">
+          <div class="section-head">
+            <div>
+              <h2>Approval Queue</h2>
+              <p>Privileged workflow for SAML users with approval rights.</p>
+            </div>
+          </div>
+          {#if approvals.isEmpty}
+            <div class="empty">No pending approvals.</div>
+          {#else}
+            {#for approval in approvals}
+              <form method="post" action="/approvals/{approval.id}/approve">
+                <strong>{approval.accountNumber} - {approval.amount}</strong>
+                <span>{approval.requestedBy}</span>
+                <textarea name="note">Reviewed through SAML approval queue.</textarea>
+                <div class="actions">
+                  <button type="submit">Approve</button>
+                  <button class="danger" type="submit" formaction="/approvals/{approval.id}/reject">Reject</button>
+                </div>
+              </form>
+            {/for}
+          {/if}
+        </div>
+      {/if}
+    </aside>
+  </section>
+
+  <section class="grid">
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>Request Status</h2>
+          <p>Requested, approved, and rejected workflow history.</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        {#if requestHistory.isEmpty}
+          <div class="empty">No requests created for this session.</div>
+        {#else}
+          <table>
+            <thead>
+            <tr>
+              <th>Account</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Requested by</th>
+              <th>Reason</th>
+            </tr>
+            </thead>
+            <tbody>
+            {#for approval in requestHistory}
+              <tr>
+                <td>{approval.accountNumber}</td>
+                <td>{approval.amount}</td>
+                <td><span class="status {approval.statusClass}">{approval.displayStatus}</span></td>
+                <td>{approval.requestedBy}</td>
+                <td>{approval.reason}</td>
+              </tr>
+            {/for}
+            </tbody>
+          </table>
+        {/if}
+      </div>
+    </div>
+
+    {#if user.canAudit}
+      <div class="section">
+        <div class="section-head">
+          <div>
+            <h2>Audit Feed</h2>
+            <p>Read-only evidence trail for auditor and admin roles.</p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+            <tr>
+              <th>Actor</th>
+              <th>Action</th>
+              <th>Target</th>
+            </tr>
+            </thead>
+            <tbody>
+            {#for event in auditEvents}
+              <tr>
+                <td>{event.actor}</td>
+                <td>{event.action}</td>
+                <td>{event.target}</td>
+              </tr>
+            {/for}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {/if}
+  </section>
+</main>
+</body>
+</html>

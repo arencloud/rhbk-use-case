@@ -1,0 +1,24 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: balance-saml-gateway-tls
+  namespace: balance-saml
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+  labels:
+    app.kubernetes.io/name: balance-saml
+    app.kubernetes.io/component: gateway-tls
+spec:
+  secretName: balance-saml-gateway-tls
+  duration: 2160h
+  renewBefore: 360h
+  commonName: balance-saml.arencloud.com
+  dnsNames:
+    - balance-saml.arencloud.com
+  privateKey:
+    algorithm: RSA
+    size: 2048
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: vault

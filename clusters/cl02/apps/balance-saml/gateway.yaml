@@ -1,0 +1,28 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: balance-saml
+  namespace: balance-saml
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+    active-passive.arencloud.com/site: cl02
+    active-passive.arencloud.com/mode: passive
+  labels:
+    app.kubernetes.io/name: balance-saml
+    app.kubernetes.io/component: gateway
+spec:
+  gatewayClassName: istio
+  listeners:
+    - name: https
+      hostname: balance-saml.arencloud.com
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: balance-saml-gateway-tls
+      allowedRoutes:
+        namespaces:
+          from: Same
