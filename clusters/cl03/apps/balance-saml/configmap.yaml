@@ -12,6 +12,7 @@ data:
   SAML_ENTITY_ID: balance-saml
   SAML_PUBLIC_URL: https://balance-saml.arencloud.com
   SAML_IDP_METADATA_URL: https://sso.arencloud.com/realms/arencloud/protocol/saml/descriptor
+  SAML_IDP_SSO_URL: https://sso.arencloud.com/realms/arencloud/protocol/saml
   SAML_TRUSTED_CA_PEM: /mnt/trusted-ca-bundle/ca-bundle.crt
   QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING: "true"
   QUARKUS_HTTP_PROXY_ALLOW_X_FORWARDED: "true"
