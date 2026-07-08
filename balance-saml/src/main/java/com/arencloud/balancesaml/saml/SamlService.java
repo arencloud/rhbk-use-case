@@ -128,6 +128,7 @@ public class SamlService {
             values.put(SettingsBuilder.SECURITY_WANT_MESSAGES_SIGNED, "false");
             values.put(SettingsBuilder.SECURITY_WANT_ASSERTIONS_ENCRYPTED, "false");
             values.put(SettingsBuilder.SECURITY_WANT_NAMEID, "true");
+            values.put(SettingsBuilder.SECURITY_ALLOW_REPEAT_ATTRIBUTE_NAME_PROPERTY_KEY, "true");
             values.put(SettingsBuilder.SECURITY_REJECT_DEPRECATED_ALGORITHM, "true");
             values.put(SettingsBuilder.COMPRESS_REQUEST, "true");
             values.put(SettingsBuilder.COMPRESS_RESPONSE, "true");

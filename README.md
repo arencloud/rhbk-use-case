@@ -255,7 +255,7 @@ cl03 GitOps deployment:
 | Argo CD application | `clusters/cl03/applications/balance-saml.yaml` |
 | Kubernetes manifests | `clusters/cl03/apps/balance-saml/` |
 | Public hostname | `https://balance-saml.arencloud.com` |
-| Image | `quay.io/arencloud/balance:saml-0.1.5` |
+| Image | `quay.io/arencloud/balance:saml-0.1.6` |
 | SAML SP entity ID | `balance-saml` |
 
 Passive cl02 GitOps deployment:
