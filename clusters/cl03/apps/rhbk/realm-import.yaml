@@ -222,3 +222,145 @@ spec:
                     - dn
                   user.roles.retrieve.strategy:
                     - LOAD_GROUPS_BY_MEMBER_ATTRIBUTE
+        - name: arencloud-389ds
+          providerId: ldap
+          config:
+            enabled:
+              - "true"
+            priority:
+              - "10"
+            fullSyncPeriod:
+              - "604800"
+            changedSyncPeriod:
+              - "86400"
+            cachePolicy:
+              - DEFAULT
+            evictDay:
+              - ""
+            evictHour:
+              - ""
+            evictMinute:
+              - ""
+            maxLifespan:
+              - ""
+            batchSizeForSync:
+              - "1000"
+            editMode:
+              - READ_ONLY
+            importEnabled:
+              - "true"
+            syncRegistrations:
+              - "false"
+            vendor:
+              - other
+            usernameLDAPAttribute:
+              - uid
+            rdnLDAPAttribute:
+              - uid
+            uuidLDAPAttribute:
+              - entryUUID
+            userObjectClasses:
+              - "inetOrgPerson, organizationalPerson"
+            connectionUrl:
+              - ldaps://ldap01.arencloud.com:636
+            usersDn:
+              - ou=people,dc=ldap,dc=arencloud,dc=com
+            authType:
+              - simple
+            bindDn:
+              - uid=svc_rhbk_ldap,ou=service-accounts,dc=ldap,dc=arencloud,dc=com
+            bindCredential:
+              - ${vault.ldap389Bc}
+            searchScope:
+              - "2"
+            validatePasswordPolicy:
+              - "false"
+            trustEmail:
+              - "false"
+            useTruststoreSpi:
+              - ldapsOnly
+            connectionPooling:
+              - "true"
+            pagination:
+              - "true"
+            allowKerberosAuthentication:
+              - "false"
+            useKerberosForPasswordAuthentication:
+              - "false"
+          subComponents:
+            org.keycloak.storage.ldap.mappers.LDAPStorageMapper:
+              - name: username
+                providerId: user-attribute-ldap-mapper
+                config:
+                  ldap.attribute:
+                    - uid
+                  user.model.attribute:
+                    - username
+                  read.only:
+                    - "true"
+                  always.read.value.from.ldap:
+                    - "true"
+                  is.mandatory.in.ldap:
+                    - "true"
+              - name: first name
+                providerId: user-attribute-ldap-mapper
+                config:
+                  ldap.attribute:
+                    - givenName
+                  user.model.attribute:
+                    - firstName
+                  read.only:
+                    - "true"
+                  always.read.value.from.ldap:
+                    - "true"
+                  is.mandatory.in.ldap:
+                    - "false"
+              - name: last name
+                providerId: user-attribute-ldap-mapper
+                config:
+                  ldap.attribute:
+                    - sn
+                  user.model.attribute:
+                    - lastName
+                  read.only:
+                    - "true"
+                  always.read.value.from.ldap:
+                    - "true"
+                  is.mandatory.in.ldap:
+                    - "false"
+              - name: email
+                providerId: user-attribute-ldap-mapper
+                config:
+                  ldap.attribute:
+                    - mail
+                  user.model.attribute:
+                    - email
+                  read.only:
+                    - "true"
+                  always.read.value.from.ldap:
+                    - "true"
+                  is.mandatory.in.ldap:
+                    - "false"
+              - name: ldap389-groups
+                providerId: group-ldap-mapper
+                config:
+                  mode:
+                    - READ_ONLY
+                  groups.dn:
+                    - ou=groups,dc=ldap,dc=arencloud,dc=com
+                  group.name.ldap.attribute:
+                    - cn
+                  group.object.classes:
+                    - groupOfNames
+                  preserve.group.inheritance:
+                    - "true"
+                  ignore.missing.groups:
+                    - "true"
+                  membership.ldap.attribute:
+                    - member
+                  membership.attribute.type:
+                    - DN
+                  membership.user.ldap.attribute:
+                    - dn
+                  user.roles.retrieve.strategy:
+                    - LOAD_GROUPS_BY_MEMBER_ATTRIBUTE

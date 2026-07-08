@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - externalsecret-pgsql.yaml
   - externalsecret-ad-bind.yaml
+  - externalsecret-ldap389-bind.yaml
   - vault-ca-bundle-configmap.yaml
   - rbac-istio-gateway-status.yaml
   - certificate.yaml

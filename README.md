@@ -59,8 +59,10 @@ docs/                   Architecture, deployment, and operations notes
 | [AD + midPoint + RHBK Architecture](docs/ad-midpoint-rhbk-architecture.md) | Overall design and responsibility split |
 | [cl03 RHBK GitOps deployment](docs/rhbk-cl03-gitops-deployment.md) | Active RHBK deployment details |
 | [cl02 active/passive GitOps deployment](docs/rhbk-cl02-active-passive-gitops.md) | Passive DR deployment, validation, failover notes |
+| [RHBK 389 DS GitOps integration](docs/rhbk-389ds-gitops-integration.md) | Second LDAP federation source for RHBK |
 | [cl03 GitOps readiness notes](docs/cl03-rhbk-gitops-readiness.md) | Platform readiness checks for the active site |
 | [Microsoft AD configuration](docs/microsoft-ad-configuration.md) | AD OU layout, groups, service accounts, LDAPS, validation |
+| [389 Directory Server configuration](docs/ldap389-directory-server.md) | LDAP389 baseline, Vault TLS, service accounts, ACLs, validation |
 | [midPoint configuration](docs/midpoint-configuration.md) | AD resource, Balance roles, admin personas, provisioning checks |
 | [Balance AD and midPoint baseline](docs/balance-ad-midpoint-baseline.md) | Balance authorization model and identity baseline |
 | [midPoint Balance usage guide](docs/midpoint-balance-usage-guide.md) | How to assign Balance access through midPoint |
@@ -114,6 +116,7 @@ Detailed setup for the non-OpenShift identity components is kept in dedicated do
 | Document | Covers |
 | --- | --- |
 | [Microsoft AD configuration](docs/microsoft-ad-configuration.md) | AD domain baseline, OU layout, Balance groups, service accounts, LDAPS, validation |
+| [389 Directory Server configuration](docs/ldap389-directory-server.md) | Secondary LDAP directory baseline, Vault certificate renewal, midPoint/RHBK bind model |
 | [midPoint configuration](docs/midpoint-configuration.md) | AD resource, trust store, Balance role inducements, admin personas, provisioning validation |
 | [AD01 LDAPS configuration](docs/ad01-ldaps-configuration.md) | Certificate issuance/import, Windows scheduled renewal, LDAPS testing |
 
@@ -138,6 +141,8 @@ Secrets are not stored in Git. They are read from Vault by External Secrets.
 | cl02 | `arencloud/cl02/rhbk/pgsql` | `username`, `password` |
 | cl02 | `arencloud/cl02/rhbk/ad-bind` | `bindCredential` |
 | cl03 | `arencloud/cl03/balance/app` | `OIDC_CLIENT_SECRET`, `DB_USERNAME`, `DB_PASSWORD` |
+| shared | `arencloud/shared/ldap389/rhbk-bind` | `bindCredential`, `password`, `bindDn`, `uid` |
+| shared | `arencloud/shared/ldap389/midpoint-bind` | `password`, `bindDn`, `uid` |
 
 The ExternalSecret remote keys are relative to the Vault mount configured in `ClusterSecretStore/vault`.
 
