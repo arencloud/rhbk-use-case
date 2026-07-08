@@ -40,7 +40,7 @@ public class SamlService {
         try {
             AuthnRequest request = new AuthnRequest(settings());
             String redirect = settings().getIdpSingleSignOnServiceUrl()
-                    + "?SAMLRequest=" + request.getEncodedAuthnRequest()
+                    + "?SAMLRequest=" + Util.urlEncoder(request.getEncodedAuthnRequest())
                     + "&RelayState=" + Util.urlEncoder(relayState == null || relayState.isBlank() ? "/" : relayState);
             return new LoginRequest(request.getId(), URI.create(redirect));
         } catch (Exception e) {

@@ -12,7 +12,7 @@ Balance SAML is the second banking demo application for the Arencloud RHBK use c
 | SP metadata endpoint | `/saml/metadata` |
 | Local logout | `/logout` |
 | IdP metadata | `https://sso.arencloud.com/realms/arencloud/protocol/saml/descriptor` |
-| Image | `quay.io/arencloud/balance:saml-0.1.0` |
+| Image | `quay.io/arencloud/balance:saml-0.1.1` |
 
 ## Authorization
 
