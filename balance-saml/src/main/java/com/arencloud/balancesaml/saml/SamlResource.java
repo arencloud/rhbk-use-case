@@ -13,11 +13,14 @@ import jakarta.ws.rs.core.Cookie;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.jboss.logging.Logger;
 
 import java.net.URI;
 
 @Path("/")
 public class SamlResource {
+    private static final Logger LOG = Logger.getLogger(SamlResource.class);
+
     private final SamlApplicationConfig config;
     private final SamlService saml;
     private final SamlSessionStore sessions;
@@ -59,6 +62,7 @@ public class SamlResource {
         try {
             principal = sessions.create(saml.validateResponse(samlResponse, requestId));
         } catch (IllegalArgumentException e) {
+            LOG.warn("SAML ACS validation failed", e);
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity(e.getMessage())
                     .type(MediaType.TEXT_PLAIN)

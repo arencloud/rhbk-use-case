@@ -79,7 +79,7 @@ public class SamlService {
                     Map.copyOf(attributes),
                     Instant.now());
         } catch (Exception e) {
-            throw new IllegalArgumentException("SAML response validation failed", e);
+            throw new IllegalArgumentException("SAML response validation failed: " + rootMessage(e), e);
         }
     }
 
@@ -175,6 +175,15 @@ public class SamlService {
     private static String first(Map<String, List<String>> attributes, String name) {
         List<String> values = attributes.get(name);
         return values == null || values.isEmpty() ? "" : values.get(0);
+    }
+
+    private static String rootMessage(Throwable throwable) {
+        Throwable current = throwable;
+        while (current.getCause() != null) {
+            current = current.getCause();
+        }
+        String message = current.getMessage();
+        return message == null || message.isBlank() ? current.getClass().getSimpleName() : message;
     }
 
     public record LoginRequest(String requestId, URI redirectUri) {
