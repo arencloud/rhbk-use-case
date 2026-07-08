@@ -14,5 +14,7 @@ data:
   SAML_IDP_METADATA_URL: http://rhbk-service.rhbk.svc.cluster.local:8080/realms/arencloud/protocol/saml/descriptor
   SAML_IDP_SSO_URL: https://sso.arencloud.com/realms/arencloud/protocol/saml
   SAML_TRUSTED_CA_PEM: /mnt/trusted-ca-bundle/ca-bundle.crt
+  QUARKUS_HTTP_LIMITS_MAX_BODY_SIZE: 10M
+  QUARKUS_HTTP_LIMITS_MAX_FORM_ATTRIBUTE_SIZE: 1M
   QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING: "true"
   QUARKUS_HTTP_PROXY_ALLOW_X_FORWARDED: "true"

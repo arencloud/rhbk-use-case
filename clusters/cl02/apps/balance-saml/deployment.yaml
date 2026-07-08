@@ -18,6 +18,8 @@ spec:
       labels:
         app.kubernetes.io/name: balance-saml
         app.kubernetes.io/part-of: arencloud-identity
+      annotations:
+        arencloud.com/config-version: "saml-limits-20260708"
     spec:
       serviceAccountName: balance-saml
       automountServiceAccountToken: false
