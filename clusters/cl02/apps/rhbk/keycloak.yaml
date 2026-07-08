@@ -44,7 +44,7 @@ spec:
     - name: vault-dir
       value: /mnt/keycloak-vault
   truststores:
-    vault-ca:
+    ad-vault-ca:
       configMap:
         name: vault-ca-bundle
   unsupported:
