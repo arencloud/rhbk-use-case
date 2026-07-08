@@ -55,7 +55,16 @@ public class SamlResource {
                     .build();
         }
 
-        SamlPrincipal principal = sessions.create(saml.validateResponse(samlResponse, requestId));
+        SamlPrincipal principal;
+        try {
+            principal = sessions.create(saml.validateResponse(samlResponse, requestId));
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(e.getMessage())
+                    .type(MediaType.TEXT_PLAIN)
+                    .cookie(access.clearLoginStateCookie())
+                    .build();
+        }
         String target = relayState == null || relayState.isBlank() ? "/" : relayState;
         return Response.seeOther(URI.create(target))
                 .cookie(access.sessionCookie(principal.sessionId()))
