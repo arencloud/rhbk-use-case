@@ -5,14 +5,14 @@ This repository contains the GitOps manifests and operating notes for the Arencl
 The main goal is to prove this flow end to end:
 
 ```text
-midPoint assignment -> AD group -> RHBK realm role -> OIDC token -> application authorization
+midPoint assignment -> directory group -> RHBK realm role -> OIDC token -> application authorization
 ```
 
 ## Current Shape
 
 | Area | Implementation |
 | --- | --- |
-| Directory and passwords | Microsoft Active Directory, domain `ad.arencloud.com` |
+| Directory and passwords | Microsoft Active Directory `ad.arencloud.com`, with 389 Directory Server as a second managed LDAP directory |
 | Identity governance | Evolveum midPoint |
 | Application identity provider | Red Hat Build of Keycloak, realm `arencloud` |
 | Public issuer | `https://sso.arencloud.com` |
@@ -107,7 +107,7 @@ Each cluster needs these capabilities before the RHBK application can converge:
 | Gateway API | `GatewayClass/istio` |
 | MetalLB | L2 IP pool for Gateway `LoadBalancer` services |
 | AD DNS forwarding | `ad.arencloud.com` resolves from cluster workloads |
-| Trusted CA bundle | OpenShift trusted CA injection for AD LDAPS trust |
+| Trusted CA bundle | OpenShift trusted CA injection for AD and 389 DS LDAPS trust |
 
 ## Identity System Configuration
 
@@ -125,9 +125,59 @@ At a high level, midPoint owns managed access:
 ```text
 Create/update user in midPoint
   -> assign Balance role
-  -> midPoint updates AD group membership
-  -> RHBK reads AD over LDAPS
+  -> midPoint updates AD and 389 DS group membership
+  -> RHBK reads the selected LDAP federation source over LDAPS
   -> Balance receives roles in OIDC token
+```
+
+## RHBK LDAP Federation Ownership
+
+The `arencloud` realm has two LDAP user federation providers:
+
+| Provider | Directory | Normal role |
+| --- | --- | --- |
+| `arencloud-ad` | Microsoft AD | Primary enterprise directory and normal login source |
+| `arencloud-389ds` | 389 Directory Server | Secondary LDAP source for validation and DR-style testing |
+
+Both directories can contain the same usernames because midPoint provisions the same managed identities and Balance group memberships to both targets. Keycloak/RHBK does not merge duplicate federated users. A local imported user has exactly one `Federation link`, so the first provider that imports a username owns that local Keycloak user record.
+
+Operationally:
+
+- Keeping both providers enabled is allowed, but duplicate usernames must be managed deliberately.
+- Provider priority decides lookup order for users that are not already imported.
+- Existing imported users do not automatically move from AD to 389 DS, or from 389 DS back to AD.
+- To switch ownership, remove imported users for the current provider, then sync the target provider.
+- Removing imported users only clears Keycloak's local imported cache. It does not delete users from AD or 389 DS.
+
+Switch a user set from AD to 389 DS:
+
+```text
+RHBK Admin Console
+  -> User federation
+  -> arencloud-ad
+  -> Action: Remove imported users
+  -> arencloud-389ds
+  -> Action: Sync all users
+```
+
+Switch a user set from 389 DS back to AD:
+
+```text
+RHBK Admin Console
+  -> User federation
+  -> arencloud-389ds
+  -> Action: Remove imported users
+  -> arencloud-ad
+  -> ensure Enabled is on
+  -> Action: Sync all users
+```
+
+After switching, validate a user in `Users` and check:
+
+```text
+Enabled: true
+Federation link: arencloud-ad or arencloud-389ds
+Groups: expected Balance groups
 ```
 
 ## Secret Inputs

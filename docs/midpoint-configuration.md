@@ -80,6 +80,8 @@ arencloud/shared/ldap389/midpoint-bind
 
 Do not configure connector-side password hashing for this resource. 389 DS should receive a normal password value and apply its own server-side password storage scheme.
 
+The account object type accepts `ri:nsMemberOf` as an auxiliary object class. This is required because the 389 DS MemberOf plugin adds `objectClass: nsMemberOf` and the computed `memberOf` attribute to users that are members of groups. midPoint must tolerate that server-managed auxiliary class and must not try to remove it during reconcile.
+
 The 389 DS resource was tested successfully from midPoint. A temporary direct-construction test user was provisioned under `ou=people`, added to `cn=balance-users,ou=groups,...`, received `memberOf`, and was deleted cleanly.
 
 ## Trust Store

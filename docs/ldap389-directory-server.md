@@ -374,6 +374,8 @@ The midPoint resource is:
 | Account DN mapping | `uid=<midPoint user name>,ou=people,dc=ldap,dc=arencloud,dc=com` |
 | Group association | object-to-subject through group `member` |
 
+The midPoint account object type includes `ri:nsMemberOf` as an auxiliary object class. This is necessary because the 389 DS MemberOf plugin maintains `objectClass: nsMemberOf` and the computed `memberOf` attribute. Those values are server-managed and should be tolerated by midPoint, not removed.
+
 The Balance roles in midPoint now induce both AD and 389 DS group memberships:
 
 | midPoint role | 389 DS group |
